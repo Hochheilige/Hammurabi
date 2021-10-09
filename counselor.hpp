@@ -1,6 +1,7 @@
 #pragma once
 
 #include "city.hpp"
+#include "randomizer.hpp"
 
 class Counselor {
 public:
@@ -31,4 +32,5 @@ private:
 
 	uint32_t current_year;
 	City city;
+	Randomizer randomizer;
 };
