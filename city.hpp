@@ -7,9 +7,12 @@ class City {
 public:
     City() = delete;
     City(const City&) = delete;
-    City(const City&&) = delete;
     City& operator= (const City&) = delete;
-    City& operator= (const City&&) = delete;
+    City& operator= (City&&) = delete;
+
+    explicit City(City&& city) 
+        : resources(std::move(city.resources)) {
+    }
 
     explicit City(uint32_t lands, uint32_t people, uint32_t wheat)
         : resources(lands, people, wheat) {
@@ -36,6 +39,15 @@ public:
 
 private:
     struct Resources {
+        Resources() = delete;
+        Resources(const Resources&) = delete;
+        Resources& operator= (const Resources&) = delete;
+        Resources& operator= (Resources&&) = delete;
+        
+        explicit Resources(Resources&& res)
+            : lands(res.lands), people(res.people), wheat(res.wheat) {
+        }
+
         explicit Resources(uint32_t lands_count, uint32_t people_count, uint32_t wheat_count)
             : lands(lands_count), people(people_count), wheat(wheat_count) {
         }
