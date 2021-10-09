@@ -3,14 +3,22 @@
 #include "counselor.hpp"
 
 auto main() -> int {
-    const uint32_t kMaxRounds = 10;
-    uint32_t game_round = 0;
-    
-    Counselor counselor(City(1000, 100, 2800));
-    
-    while(game_round < kMaxRounds) {
-        counselor.ManageCity();
+    static constexpr uint32_t kInitialRound = 0;
+    static constexpr uint32_t kMaxRounds = 10;
+    static constexpr uint32_t kDefaultLandsCount = 1000;
+    static constexpr uint32_t kDefaultPeopleCount = 100;
+    static constexpr uint32_t kDefautWheatCount = 2800;
 
-        ++game_round;
+    Counselor counselor(
+        kInitialRound,
+        City(
+            kDefaultLandsCount, 
+            kDefaultPeopleCount, 
+            kDefautWheatCount
+        )
+    );
+    
+    while(counselor.GetCurrentYear() < kMaxRounds) {
+        counselor.ManageCity();
     }
 }

@@ -4,6 +4,7 @@
 
 void Counselor::ManageCity() {
     GreetRuler();
+    ++current_year;
 }
 
 void Counselor::GreetRuler() {
