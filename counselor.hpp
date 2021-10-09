@@ -14,9 +14,11 @@ public:
 		: current_year(rounds), city(std::move(c)) {
 	}
 	
+	inline uint32_t GetCurrentYear() { return current_year; }
+
 	void ManageCity();
 
-	inline uint32_t GetCurrentYear() { return current_year; }
+	bool IsPopulationDead();
 
 	void BuyLands(uint32_t lands_count);
 private:

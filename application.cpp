@@ -18,7 +18,7 @@ auto main() -> int {
         )
     );
     
-    while(counselor.GetCurrentYear() < kMaxRounds) {
+    while(counselor.GetCurrentYear() < kMaxRounds || !counselor.IsPopulationDead()) {
         counselor.ManageCity();
     }
 }
