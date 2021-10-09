@@ -3,10 +3,6 @@
 #include <vector>
 #include <cstdint>
 
-using Land = bool; 
-using People = uint32_t;
-using Wheat = uint32_t;
-
 class City {
 public:
     City() = delete;
@@ -15,19 +11,38 @@ public:
     City& operator= (const City&) = delete;
     City& operator= (const City&&) = delete;
 
-    explicit City(uint32_t lands_count, People people, Wheat wheat) 
-        : resources(lands_count, people, wheat) {
+    explicit City(uint32_t lands, uint32_t people, uint32_t wheat)
+        : resources(lands, people, wheat) {
+    }
+
+    inline uint32_t GetLands() { return resources.lands; }
+    inline uint32_t GetPeople() { return resources.people; }
+    inline uint32_t GetWheat() { return resources.wheat; }
+
+    inline City& SetLands(const uint32_t lands) {
+        resources.lands = lands;
+        return *this;
+    }
+
+    inline City& SetPeople(const uint32_t people) {
+        resources.people = people; 
+        return *this;
+    }
+
+    inline City& SetWheat(const uint32_t wheat) {
+        resources.wheat = wheat;
+        return *this;
     }
 
 private:
     struct Resources {
-        explicit Resources(uint32_t lands_count, People people_count, Wheat wheat_count) 
+        explicit Resources(uint32_t lands_count, uint32_t people_count, uint32_t wheat_count)
             : lands(lands_count), people(people_count), wheat(wheat_count) {
         }
 
-        std::vector<Land> lands;
-        People people;
-        Wheat wheat;
+        uint32_t lands;
+        uint32_t people;
+        uint32_t wheat;
     };
 
     Resources resources;
