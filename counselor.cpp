@@ -10,11 +10,12 @@ void Counselor::ManageCity() {
     } else {
         GetInformationAboutCity();
     }
-    
+
     std::cout << "Land cost is: " << randomizer.GetLandCost() << '\n'
               << "Wheat per land: " << randomizer.GetWheat() << '\n'
               << "Rat ate wheat: " << randomizer.GetWheatEatenByRat(city.GetWheat()) << '\n'
               << "Is plague happened? " << randomizer.IsPlagueHappened() << '\n';
+              
     ++current_year;
 }
 
