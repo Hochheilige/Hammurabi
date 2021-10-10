@@ -4,8 +4,13 @@ class Randomizer {
 public:
     Randomizer() 
         : generator(device()), 
+          plague_distribution(kMinPlagueChance, kMaxPlagueChance),
           wheat_distribution(kMinWheatPerLand, kMaxWheatPerLand),
           land_cost_distribution(kMinLandCost, kMaxLandCost) {
+    }
+
+    inline bool IsPlagueHappened() {
+        return plague_distribution(generator) < kPlagueChance;
     }
 
     inline int32_t GetWheat() {
@@ -23,14 +28,20 @@ public:
     }
 
 private:
+    static constexpr uint8_t kPlagueChance = 4;
+    static constexpr uint8_t kMinPlagueChance = 1;
+    static constexpr uint8_t kMaxPlagueChance = 20;
     static constexpr uint8_t kMinWheatPerLand = 1;
     static constexpr uint8_t kMaxWheatPerLand = 6;
     static constexpr uint8_t kMinLandCost = 17;
     static constexpr uint8_t kMaxLandCost = 26;
     static constexpr uint8_t kMinWheatPerRat = 0;
     static constexpr float kRatCoefficient = 0.07f;
+
+private:
     std::random_device device;
     std::mt19937 generator;
+    std::uniform_int_distribution<> plague_distribution;
     std::uniform_int_distribution<> wheat_distribution;
     std::uniform_int_distribution<> land_cost_distribution;
     std::uniform_int_distribution<> rat_distribution;
