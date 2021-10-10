@@ -4,10 +4,17 @@
 
 void Counselor::ManageCity() {
     GreetRuler();
-    std::cout << "Land cost is: " << randomizer.GetLandCost() << std::endl
-              << "Wheat per land: " << randomizer.GetWheat() << std::endl
-              << "Rat ate wheat: " << randomizer.GetWheatEatenByRat(city.GetWheat()) << std::endl
-              << "Is plague happened? " << randomizer.IsPlagueHappened() << std::endl;
+
+    if (IsFirstYear()) {
+        GetOriginInformationAboutCity();
+    } else {
+        GetInformationAboutCity();
+    }
+    
+    std::cout << "Land cost is: " << randomizer.GetLandCost() << '\n'
+              << "Wheat per land: " << randomizer.GetWheat() << '\n'
+              << "Rat ate wheat: " << randomizer.GetWheatEatenByRat(city.GetWheat()) << '\n'
+              << "Is plague happened? " << randomizer.IsPlagueHappened() << '\n';
     ++current_year;
 }
 
@@ -17,4 +24,15 @@ bool Counselor::IsPopulationDead() {
 
 void Counselor::GreetRuler() {
     std::cout << "My lord, deign to tell you\n";
+}
+
+void Counselor::GetInformationAboutCity() {
+    std::cout << "In the " << current_year << " of your highest permission\n";
+}
+
+void Counselor::GetOriginInformationAboutCity() {
+    std::cout << "In the 1 year of your highest permission\n" 
+              << "The population of the city is " << city.GetPeople() << " people\n"
+              << "We have " << city.GetWheat() << " bushels of wheat in the barn\n"
+              << "Our city occupies " << city.GetLands() << " acres of land\n";
 }
