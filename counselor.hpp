@@ -32,6 +32,8 @@ private:
 
 	inline bool IsFirstYear() { return current_year == 1; }
 
+	uint32_t NumberOfPeopleArrivedToCity(const uint32_t wheat_per_acre);
+
 private:
 	static constexpr uint32_t kWheatPerPerson = 20;
 	static constexpr uint32_t kMaxLandPersonFarm = 10;
@@ -40,6 +42,7 @@ private:
 private:
     uint32_t current_year;
 	uint32_t land_price;
+	uint32_t not_fed_people;
 	City city;
 	Randomizer randomizer;
 };

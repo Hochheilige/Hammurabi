@@ -37,3 +37,15 @@ void Counselor::GetOriginInformationAboutCity() {
               << "We have " << city.GetWheat() << " bushels of wheat in the barn\n"
               << "Our city occupies " << city.GetLands() << " acres of land\n";
 }
+
+uint32_t Counselor::NumberOfPeopleArrivedToCity(const uint32_t wheat_per_acre) {
+    const uint32_t arrived_people = not_fed_people / 2 + (5 - wheat_per_acre) * city.GetWheat() / 600 + 1;
+	switch (arrived_people) {
+		case 0:
+			return 0;
+		case 50:
+			return 50;
+		default:
+			return arrived_people;
+	}
+}
