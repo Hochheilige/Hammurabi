@@ -17,9 +17,12 @@ auto main() -> int {
             kDefautWheatCount
         )
     );
-    
+
     while(counselor.GetCurrentYear() <= kMaxRounds || !counselor.IsPopulationDead()) {
+        counselor.GetInformationAboutCity();
+        counselor.BuyLands();
+        counselor.WheatToEat();
+        counselor.WheatToSow();
         counselor.ManageCity();
-        // in progress ... 
     }
 }

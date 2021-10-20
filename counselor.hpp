@@ -11,6 +11,7 @@ public:
 	Counselor& operator= (const Counselor&) = delete;
     Counselor& operator= (Counselor&&) = delete;
 
+	// TODO: make move semantic work in this constructor
 	explicit Counselor(uint32_t rounds, City&& c)
 		: current_year(rounds), city(std::move(c)) {
 	}
@@ -19,30 +20,46 @@ public:
 
 	void ManageCity();
 
-	bool IsPopulationDead();
+	void GetInformationAboutCity();
 
-	void BuyLands(uint32_t lands_count);
+	void BuyLands();
+
+	void WheatToEat();
+
+	void WheatToSow();
+
+	bool IsPopulationDead();
 
 private:
 	void GreetRuler();
 
-	void GetInformationAboutCity();
-
 	void GetOriginInformationAboutCity();
+
+	void GetLandCost();
 
 	inline bool IsFirstYear() { return current_year == 1; }
 
-	uint32_t NumberOfPeopleArrivedToCity(const uint32_t wheat_per_acre);
+	void NumberOfPeopleArrivedToCity();
 
 private:
 	static constexpr uint32_t kWheatPerPerson = 20;
 	static constexpr uint32_t kMaxLandPersonFarm = 10;
-	static constexpr float kWheatPerFarm = 0.5;
+	static constexpr uint32_t kWheatPerFarm = 2;
 
 private:
-    uint32_t current_year;
-	uint32_t land_price;
+	uint32_t current_year;
+	uint32_t land_cost;
+	uint32_t land_buy;
+	uint32_t wheat_to_eat;
+	uint32_t acre_to_sow;
 	uint32_t not_fed_people;
+	uint32_t arrived_people;
+	uint32_t wheat_collected;
+	uint32_t wheat_per_acre;
+	uint32_t wheat_rat_ate;
+	bool is_plague_happened;
+
+private:
 	City city;
 	Randomizer randomizer;
 };

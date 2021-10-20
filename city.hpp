@@ -18,9 +18,9 @@ public:
         : resources(lands, people, wheat) {
     }
 
-    inline uint32_t GetLands() { return resources.lands; }
-    inline uint32_t GetPeople() { return resources.people; }
-    inline uint32_t GetWheat() { return resources.wheat; }
+    inline uint32_t GetLands() const { return resources.lands; }
+    inline uint32_t GetPeople() const { return resources.people; }
+    inline uint32_t GetWheat() const { return resources.wheat; }
 
     inline City& SetLands(const uint32_t lands) {
         resources.lands = lands;
