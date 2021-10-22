@@ -20,9 +20,7 @@ auto main() -> int {
 
     while(counselor.GetCurrentYear() <= kMaxRounds || !counselor.IsPopulationDead()) {
         counselor.GetInformationAboutCity();
-        counselor.BuyLands();
-        counselor.WheatToEat();
-        counselor.WheatToSow();
+        counselor.GetRulerInstructions();
         counselor.ManageCity();
     }
 }

@@ -1,8 +1,13 @@
 #pragma once
 
+#include <memory>
+#include <exception>
+
 #include "city.hpp"
 #include "randomizer.hpp"
 
+
+// TODO: think how to reduce occupied space
 class Counselor {
 public:
 	Counselor() = delete;
@@ -13,7 +18,7 @@ public:
 
 	// TODO: make move semantic work in this constructor
 	explicit Counselor(uint32_t rounds, City&& c)
-		: current_year(rounds), city(std::move(c)) {
+		: current_year(rounds), city(std::make_unique<City>(std::move(c))) {
 	}
 	
 	inline uint32_t GetCurrentYear() { return current_year; }
@@ -22,24 +27,28 @@ public:
 
 	void GetInformationAboutCity();
 
-	void BuyLands();
-
-	void WheatToEat();
-
-	void WheatToSow();
+	void GetRulerInstructions();
 
 	bool IsPopulationDead();
 
 private:
+	inline bool IsFirstYear() { return current_year == 1; }
+
 	void GreetRuler();
 
 	void GetOriginInformationAboutCity();
 
-	void GetLandCost();
+	void PopulationChange();
 
-	inline bool IsFirstYear() { return current_year == 1; }
+	void CollectWheat();
 
-	void NumberOfPeopleArrivedToCity();
+	void CalculatePeopleArrivedToCity();
+	
+	void BuyLands();
+
+	void GetWheatToEat();
+
+	void GetWheatToSow();
 
 private:
 	static constexpr uint32_t kWheatPerPerson = 20;
@@ -47,6 +56,8 @@ private:
 	static constexpr uint32_t kWheatPerFarm = 2;
 
 private:
+	// Может быть переменные заменить на С-массивы или просто массивы
+	// и сделать енум чтобы обращаться к нужным полям
 	uint32_t current_year;
 	uint32_t land_cost;
 	uint32_t land_buy;
@@ -60,6 +71,6 @@ private:
 	bool is_plague_happened;
 
 private:
-	City city;
-	Randomizer randomizer;
+	std::unique_ptr<City> city;
+	const std::unique_ptr<Randomizer> randomizer;
 };
