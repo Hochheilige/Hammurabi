@@ -3,7 +3,7 @@
 #include "counselor.hpp"
 
 void Counselor::ManageCity() {
-    city->SetLands(city->GetLands() + land_buy);
+    city->SetLands(city->GetLands() + static_cast<uint32_t>(land_buy));
     PopulationChange();
     CollectWheat();
     ++current_year;
@@ -25,9 +25,9 @@ void Counselor::GetInformationAboutCity() {
             std::cout << "Plague killed half of people\n";
         } 
         std::cout << "The population of the city is " << city->GetPeople() << " people\n"
-                  << "We collected " << wheat_collected << " by " << wheat_per_acre << " per acre\n"
-                  << "Rats ate " << wheat_rat_ate << " left " << city->GetWheat() << " bushels in the barn\n"
-                  << "Our city occupies " << city->GetLands() << " acres of land\n";
+                  << "We collected " << wheat_collected << " bushels of wheat by " << wheat_per_acre << " per acre\n"
+                  << "Rats destroyed " << wheat_rat_ate << " bushels of wheat, left " << city->GetWheat() << " bushels in the barn\n"
+                  << "Our city now occupies " << city->GetLands() << " acres of land\n";
     }
 
     land_cost = static_cast<uint32_t>(randomizer->GetLandCost());
@@ -46,8 +46,10 @@ void Counselor::GetRulerInstructions() {
             GetWheatToSow();
             break;
         } catch (...) {
-            std::cout << "error";
             temp_city.swap(city);
+            std::cout << "Oh, Lord, spare us! We have only " << city->GetPeople() << " people, "
+                      << city->GetWheat() << " bushels of wheat and " 
+                      << city->GetLands() << " acres of land\n";
         }
     }
 }
@@ -57,7 +59,8 @@ bool Counselor::IsPopulationDead() {
 }
 
 void Counselor::GreetRuler() {
-    std::cout << "My lord, deign to tell you\n";
+    std::cout << "--------------------------------------------------------------------------\n"
+              <<"My lord, deign to tell you\n";
 }
 
 void Counselor::GetOriginInformationAboutCity() {
@@ -68,7 +71,7 @@ void Counselor::GetOriginInformationAboutCity() {
 }
 
 void Counselor::PopulationChange() {
-    uint32_t fed_people = wheat_to_eat / kWheatPerPerson;
+    uint32_t fed_people = static_cast<uint32_t>(wheat_to_eat) / kWheatPerPerson;
     not_fed_people = city->GetPeople() - fed_people;
     if (is_plague_happened = randomizer->IsPlagueHappened(); is_plague_happened) {
         fed_people /= 2;
@@ -80,7 +83,7 @@ void Counselor::PopulationChange() {
 void Counselor::CollectWheat() {
     wheat_rat_ate = static_cast<uint32_t>(randomizer->GetWheatEatenByRat(city->GetWheat()));
     wheat_per_acre = static_cast<uint32_t>(randomizer->GetWheat());
-    wheat_collected = acre_to_sow * wheat_per_acre;
+    wheat_collected = static_cast<uint32_t>(acre_to_sow) * wheat_per_acre;
     city->SetWheat(city->GetWheat() + wheat_collected - wheat_rat_ate);
 }
 
@@ -100,23 +103,23 @@ void Counselor::BuyLands() {
     std::cout << "How many lands do u want to buy? ";
     while (true) {
         std::cin >> land_buy;
-        if (land_buy * land_cost > city->GetWheat() || land_buy < 0) {
+        if (land_buy < 0 || static_cast<uint32_t>(land_buy) * land_cost > city->GetWheat()) {
             throw("Not enough wheat to buy lands");
         } else {
-            city->SetWheat(city->GetWheat() - land_buy * land_cost);
+            city->SetWheat(city->GetWheat() - static_cast<uint32_t>(land_buy) * land_cost);
             break;
         }
     }
 }
 
 void Counselor::GetWheatToEat() {
-    std::cout << "How many wheat do u want to eat ";
+    std::cout << "How many wheat do u want to eat? ";
     while (true) {
         std::cin >> wheat_to_eat;
-        if (wheat_to_eat < city->GetWheat() || wheat_to_eat < 0) {
+        if (wheat_to_eat < 0 || static_cast<uint32_t>(wheat_to_eat) > city->GetWheat()) {
             throw("Not enough wheat to eat");
         } else {
-            city->SetWheat(city->GetWheat() - wheat_to_eat);
+            city->SetWheat(city->GetWheat() - static_cast<uint32_t>(wheat_to_eat));
             break;
         }
     }
@@ -126,10 +129,11 @@ void Counselor::GetWheatToSow() {
     std::cout << "How many acre to sow? ";
     while (true) {
         std::cin >> acre_to_sow;
-        if (acre_to_sow / kWheatPerFarm < city->GetWheat() || acre_to_sow < 0) {
-            throw("Not enough wheat to sow");
+        if (acre_to_sow < 0 || static_cast<uint32_t>(acre_to_sow) / kWheatPerFarm > city->GetWheat()
+            || static_cast<uint32_t>(acre_to_sow) / kMaxLandPersonFarm <= city->GetPeople()) {
+            throw("Not enough wheat or people to sow");
         } else {
-            city->SetWheat(city->GetWheat() - acre_to_sow / kWheatPerFarm);
+            city->SetWheat(city->GetWheat() - static_cast<uint32_t>(acre_to_sow) / kWheatPerFarm);
             break;
         }
     }

@@ -18,7 +18,9 @@ public:
 
 	// TODO: make move semantic work in this constructor
 	explicit Counselor(uint32_t rounds, City&& c)
-		: current_year(rounds), city(std::make_unique<City>(std::move(c))) {
+		: current_year(rounds), 
+		  city(std::make_unique<City>(std::move(c))),
+		  randomizer(new Randomizer()) {
 	}
 	
 	inline uint32_t GetCurrentYear() { return current_year; }
@@ -60,17 +62,17 @@ private:
 	// и сделать енум чтобы обращаться к нужным полям
 	uint32_t current_year;
 	uint32_t land_cost;
-	uint32_t land_buy;
-	uint32_t wheat_to_eat;
-	uint32_t acre_to_sow;
 	uint32_t not_fed_people;
 	uint32_t arrived_people;
 	uint32_t wheat_collected;
 	uint32_t wheat_per_acre;
 	uint32_t wheat_rat_ate;
+	int32_t land_buy;
+	int32_t wheat_to_eat;
+	int32_t acre_to_sow;
 	bool is_plague_happened;
 
 private:
 	std::unique_ptr<City> city;
-	const std::unique_ptr<Randomizer> randomizer;
+	std::unique_ptr<Randomizer> randomizer;
 };
