@@ -18,7 +18,10 @@ public:
 
 	// TODO: make move semantic work in this constructor
 	explicit Counselor(uint32_t rounds, City&& c)
-		: current_year(rounds), 
+		: current_year(rounds),
+		  people_changes(new uint32_t[2]),
+		  wheat_changes(new uint32_t[3]),
+		  ruler_input(new int32_t[3]), 
 		  city(std::make_unique<City>(std::move(c))),
 		  randomizer(new Randomizer()) {
 	}
@@ -56,21 +59,35 @@ private:
 	static constexpr uint32_t kWheatPerPerson = 20;
 	static constexpr uint32_t kMaxLandPersonFarm = 10;
 	static constexpr uint32_t kWheatPerFarm = 2;
+	static constexpr float kPercentPopulationToLoseGame =  0.45f;
+
+	enum PeopleChanges : uint8_t {
+		kNotFedPeople = 0,
+		kArrivedPeople,
+	};
+
+	enum WheatChanges : uint8_t {
+		kWheatCollected = 0,
+		kWheatPerAcre,
+		kWheatRatAte,
+	};
+
+	enum RulerInput : uint8_t {
+		kLandBuy = 0,
+		kWheatToEat,
+		kAcreToSow,
+	};
 
 private:
-	// Может быть переменные заменить на С-массивы или просто массивы
-	// и сделать енум чтобы обращаться к нужным полям
-	uint32_t current_year;
-	uint32_t land_cost;
-	uint32_t not_fed_people;
-	uint32_t arrived_people;
-	uint32_t wheat_collected;
-	uint32_t wheat_per_acre;
-	uint32_t wheat_rat_ate;
-	int32_t land_buy;
-	int32_t wheat_to_eat;
-	int32_t acre_to_sow;
-	bool is_plague_happened;
+	uint32_t current_year = 0;
+	uint32_t land_cost = 0;
+
+	std::unique_ptr<uint32_t[]> people_changes;
+	std::unique_ptr<uint32_t[]> wheat_changes;
+	std::unique_ptr<int32_t[]> ruler_input;
+	
+	bool is_plague_happened = false;
+	bool is_most_population_starved_to_death = false;
 
 private:
 	std::unique_ptr<City> city;
