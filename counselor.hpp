@@ -17,7 +17,7 @@ public:
     Counselor& operator= (Counselor&&) = delete;
 
 	// TODO: make move semantic work in this constructor
-	explicit Counselor(uint32_t rounds, City&& c)
+	explicit Counselor(uint8_t rounds, City&& c)
 		: current_year(rounds),
 		  people_changes(new uint32_t[2]),
 		  wheat_changes(new uint32_t[3]),
@@ -79,16 +79,16 @@ private:
 	};
 
 private:
-	uint32_t current_year = 0;
-	uint32_t land_cost = 0;
+	uint8_t current_year = 0;
+	uint8_t land_cost = 0;
+	
+	bool is_plague_happened = false;
+	bool is_most_population_starved_to_death = false;
 
 	std::unique_ptr<uint32_t[]> people_changes;
 	std::unique_ptr<uint32_t[]> wheat_changes;
 	std::unique_ptr<int32_t[]> ruler_input;
 	
-	bool is_plague_happened = false;
-	bool is_most_population_starved_to_death = false;
-
 private:
 	std::unique_ptr<City> city;
 	std::unique_ptr<Randomizer> randomizer;

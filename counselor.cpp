@@ -14,7 +14,7 @@ void Counselor::GetInformationAboutCity() {
     if (IsFirstYear()) {
         GetOriginInformationAboutCity();
     } else { 
-        std::cout << "In the " << current_year << " of your highest permission\n";
+        std::cout << "In the " << static_cast<uint32_t>(current_year) << " of your highest permission\n";
 
         const uint32_t not_fed_people = people_changes[PeopleChanges::kNotFedPeople];
         const uint32_t arrived_people = people_changes[PeopleChanges::kArrivedPeople];
@@ -40,12 +40,11 @@ void Counselor::GetInformationAboutCity() {
                   << "Our city now occupies " << city->GetLands() << " acres of land\n";
     }
 
-    land_cost = static_cast<uint32_t>(randomizer->GetLandCost());
-    std::cout << "Land cost is: " << land_cost << '\n';
+    land_cost = static_cast<uint8_t>(randomizer->GetLandCost());
+    std::cout << "Land cost is: " << static_cast<uint32_t>(land_cost) << '\n';
 }
 
 void Counselor::GetRulerInstructions() {
-    // maybe should create copy-ctor for city???
     std::unique_ptr<City> temp_city = std::make_unique<City>(
         city->GetLands(), city->GetPeople(), city->GetWheat()
     );
