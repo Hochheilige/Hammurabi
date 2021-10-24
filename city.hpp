@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <cstdint>
+#include <iostream>
+#include <fstream>
 
 class City {
 public:
@@ -9,7 +11,7 @@ public:
     City(const City&) = delete;
     City& operator= (const City&) = delete;
     City& operator= (City&&) = delete;
-
+    
     explicit City(City&& city) 
         : resources(std::move(city.resources)) {
     }
@@ -37,15 +39,26 @@ public:
         return *this;
     }
 
+    friend inline std::ofstream& operator << (std::ofstream& out, City& city){
+        out.write(reinterpret_cast<char*>(&city), sizeof(city));
+        return out;
+    }
+
+    friend inline std::ifstream& operator >> (std::ifstream& in, City& city) {
+        in.read(reinterpret_cast<char*>(&city), sizeof(city));
+        return in;
+    }
+
 private:
     struct Resources {
-        Resources() = delete;
+        Resources() = default;
         Resources(const Resources&) = delete;
         Resources& operator= (const Resources&) = delete;
-        Resources& operator= (Resources&&) = delete;
-        
+        Resources& operator= (Resources&& res) = delete;
+       
         explicit Resources(Resources&& res)
             : lands(res.lands), people(res.people), wheat(res.wheat) {
+                res.lands = res.people = res.wheat = 0;
         }
 
         explicit Resources(uint32_t lands_count, uint32_t people_count, uint32_t wheat_count)

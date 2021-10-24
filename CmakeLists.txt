@@ -4,6 +4,6 @@ project(Hammurabi LANGUAGES CXX)
 
 add_compile_options(-Wall -Wextra -Wpedantic -Wno-c++98-compat -Wno-c++98-compat-pedantic)
 
-add_executable(${PROJECT_NAME} application.cpp counselor.cpp)
+add_executable(${PROJECT_NAME} application.cpp counselor.cpp game_manager.cpp)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)

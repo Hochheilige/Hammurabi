@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <exception>
+#include <fstream>
 
 #include "city.hpp"
 #include "randomizer.hpp"
@@ -10,13 +11,19 @@
 // TODO: think how to reduce occupied space
 class Counselor {
 public:
-	Counselor() = delete;
 	Counselor(const Counselor&) = delete;
 	Counselor(Counselor&&) = delete;
 	Counselor& operator= (const Counselor&) = delete;
     Counselor& operator= (Counselor&&) = delete;
 
-	// TODO: make move semantic work in this constructor
+	Counselor() 
+		: people_changes(new uint32_t[2]),
+		  wheat_changes(new uint32_t[3]),
+		  ruler_input(new int32_t[3]),  
+		  city(std::make_unique<City>(City(0, 0, 0))),
+		  randomizer(new Randomizer()) {
+	}
+
 	explicit Counselor(uint8_t rounds, City&& c)
 		: current_year(rounds),
 		  people_changes(new uint32_t[2]),
@@ -25,8 +32,30 @@ public:
 		  city(std::make_unique<City>(std::move(c))),
 		  randomizer(new Randomizer()) {
 	}
+
+	inline Counselor& SetYear(const uint8_t year) { 
+		current_year = year; 
+		return *this;
+	}
+
+	inline Counselor& SetCity(City&& c) { 
+		city = std::make_unique<City>(std::move(c)); 
+		return *this;
+	}
+
+	inline Counselor& SetEvents() {
+		is_most_population_starved_to_death = false;
+		is_plague_happened = false;
+		return *this;
+	}
 	
-	inline uint32_t GetCurrentYear() { return current_year; }
+	inline uint8_t GetCurrentYear() { return current_year; }
+
+	inline uint32_t GetDeadPeople() { return people_changes[PeopleChanges::kNotFedPeople]; }
+
+	inline uint32_t GetPeople() { return city->GetPeople(); }
+
+	inline uint32_t GetLands() {return city->GetLands(); }
 
 	void ManageCity();
 
@@ -34,7 +63,11 @@ public:
 
 	void GetRulerInstructions();
 
-	bool IsPopulationDead();
+	bool IsPopulationDead(); 
+
+	friend std::ofstream& operator << (std::ofstream& out, Counselor& counselor);
+
+	friend std::ifstream& operator >> (std::ifstream& in, Counselor& counselor);
 
 private:
 	inline bool IsFirstYear() { return current_year == 1; }

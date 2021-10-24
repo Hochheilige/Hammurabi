@@ -71,6 +71,51 @@ bool Counselor::IsPopulationDead() {
     return false;
 }
 
+std::ofstream& operator << (std::ofstream& out, Counselor& counselor) {
+    out.write(reinterpret_cast<char*>(&counselor.current_year), sizeof(counselor.current_year));
+    out.write(reinterpret_cast<char*>(&counselor.land_cost), sizeof(counselor.land_cost));
+    out.write(reinterpret_cast<char*>(&counselor.is_plague_happened), sizeof(counselor.is_plague_happened));
+    out.write(
+        reinterpret_cast<char*>(&counselor.is_most_population_starved_to_death),
+        sizeof(counselor.is_most_population_starved_to_death)
+    );
+    
+    for (size_t i = 0; i < 2; ++i) {
+        out.write(reinterpret_cast<char*>(&counselor.people_changes[i]), sizeof(counselor.people_changes[i]));
+    }
+
+    for (size_t i = 0; i < 3; ++i) {
+        out.write(reinterpret_cast<char*>(&counselor.wheat_changes[i]), sizeof(counselor.wheat_changes[i]));
+        out.write(reinterpret_cast<char*>(&counselor.ruler_input[i]), sizeof(counselor.ruler_input[i]));
+    }
+
+    out << *counselor.city.get();
+    return out;
+}
+
+std::ifstream& operator >> (std::ifstream& in, Counselor& counselor) {
+    in.read(reinterpret_cast<char*>(&counselor.current_year), sizeof(counselor.current_year));
+    in.read(reinterpret_cast<char*>(&counselor.land_cost), sizeof(counselor.land_cost));
+    in.read(reinterpret_cast<char*>(&counselor.is_plague_happened), sizeof(counselor.is_plague_happened));
+    in.read(
+        reinterpret_cast<char*>(&counselor.is_most_population_starved_to_death),
+        sizeof(counselor.is_most_population_starved_to_death)
+    );
+    
+    for (size_t i = 0; i < 2; ++i) {
+        in.read(reinterpret_cast<char*>(&counselor.people_changes[i]), sizeof(counselor.people_changes[i]));
+    }
+
+    for (size_t i = 0; i < 3; ++i) {
+        in.read(reinterpret_cast<char*>(&counselor.wheat_changes[i]), sizeof(counselor.wheat_changes[i]));
+        in.read(reinterpret_cast<char*>(&counselor.ruler_input[i]), sizeof(counselor.ruler_input[i]));
+    }
+
+    in >> *counselor.city;
+    
+    return in;
+}
+
 void Counselor::GreetRuler() {
     std::cout << "--------------------------------------------------------------------------\n"
               <<"My lord, deign to tell you\n";
