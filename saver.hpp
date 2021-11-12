@@ -4,8 +4,8 @@
 #include <string>
 #include <filesystem>
 
-#include "counselor.hpp"
-#include "game_manager.hpp"
+#include <counselor.hpp>
+#include <game_manager.hpp>
 
 class Saver {
 public:
@@ -21,6 +21,7 @@ public:
     }
 
     inline void Load(Counselor& counselor, GameManager& gm) {
+        std::cout << "Game is loaded\n";
         std::ifstream in(filename, std::ios::binary);
         in >> counselor >> gm;
     }
@@ -28,6 +29,8 @@ public:
     inline bool IsFileExist() {
         return std::filesystem::exists(filename);
     }
+
+    bool IsPlayerWantToLoad();
 
 private:
     std::string filename = "HammurabiGameSave.bin";

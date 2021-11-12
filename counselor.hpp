@@ -4,11 +4,9 @@
 #include <exception>
 #include <fstream>
 
-#include "city.hpp"
-#include "randomizer.hpp"
+#include <city.hpp>
+#include <randomizer.hpp>
 
-
-// TODO: think how to reduce occupied space
 class Counselor {
 public:
 	Counselor(const Counselor&) = delete;

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "counselor.hpp"
+#include <counselor.hpp>
 
 void Counselor::ManageCity() {
     city->SetLands(city->GetLands() + static_cast<uint32_t>(ruler_input[RulerInput::kLandBuy]));
@@ -56,6 +56,9 @@ void Counselor::GetRulerInstructions() {
             break;
         } catch (...) {
             temp_city.swap(city);
+            temp_city->SetLands(city->GetLands())
+                      .SetPeople(city->GetPeople())
+                      .SetWheat(city->GetWheat());
             std::cout << "Oh, Lord, spare us! We have only " << city->GetPeople() << " people, "
                       << city->GetWheat() << " bushels of wheat and " 
                       << city->GetLands() << " acres of land\n";
@@ -65,7 +68,7 @@ void Counselor::GetRulerInstructions() {
 
 bool Counselor::IsPopulationDead() {
     if (is_most_population_starved_to_death) {
-        std::cout << "My Lord, we lost most of our people! The city is dead!\nGAME OVER\n";
+        std::cout << "My Lord, we lost most of our people! The city is dead!\n\nGAME OVER\n\n";
         return true;
     }
     return false;
@@ -132,6 +135,7 @@ void Counselor::PopulationChange() {
     const uint32_t wheat_to_eat = static_cast<uint32_t>(
         ruler_input[RulerInput::kWheatToEat]
     );
+
     uint32_t fed_people = static_cast<uint32_t>(wheat_to_eat) / kWheatPerPerson;
     people_changes[PeopleChanges::kNotFedPeople] = city->GetPeople() - fed_people;
 
@@ -152,10 +156,6 @@ void Counselor::PopulationChange() {
 }
 
 void Counselor::CollectWheat() {
-    wheat_changes[WheatChanges::kWheatRatAte] = static_cast<uint32_t>(
-        randomizer->GetWheatEatenByRat(city->GetWheat())
-    );
-
     wheat_changes[WheatChanges::kWheatPerAcre] =  static_cast<uint32_t>(
         randomizer->GetWheat()
     );
@@ -163,67 +163,64 @@ void Counselor::CollectWheat() {
     const uint32_t acre_to_sow = static_cast<uint32_t>(ruler_input[RulerInput::kAcreToSow]);
     wheat_changes[WheatChanges::kWheatCollected] = acre_to_sow * wheat_changes[WheatChanges::kWheatPerAcre];
 
-    const uint32_t wheat_collected = wheat_changes[WheatChanges::kWheatCollected] 
-                                   - wheat_changes[WheatChanges::kWheatRatAte];
+    uint32_t wheat_collected = wheat_changes[WheatChanges::kWheatCollected];
+
+    wheat_changes[WheatChanges::kWheatRatAte] = static_cast<uint32_t>(
+        randomizer->GetWheatEatenByRat(city->GetWheat() + wheat_collected)
+    );
+
+    wheat_collected -= wheat_changes[WheatChanges::kWheatRatAte];
+
     city->SetWheat(city->GetWheat() + wheat_collected);
 }
 
 void Counselor::CalculatePeopleArrivedToCity() {
     const uint32_t not_fed_people = people_changes[PeopleChanges::kNotFedPeople];
     const uint32_t wheat_per_acre = wheat_changes[WheatChanges::kWheatPerAcre];
-    const uint32_t arrived_people = not_fed_people / 2 + (5 - wheat_per_acre) * city->GetWheat() / 600 + 1;
-	switch (arrived_people) {
-		case 0: 
-            people_changes[PeopleChanges::kArrivedPeople] = 0;
-            break;
-		default:
-            people_changes[PeopleChanges::kArrivedPeople] = 50;
-			break;
-	}
+    const int32_t arrived_people = not_fed_people / 2 + (5 - wheat_per_acre) * city->GetWheat() / 600 + 1;
+    if (arrived_people <= 0) {
+        people_changes[PeopleChanges::kArrivedPeople] = 0;
+    } else if (arrived_people > 50) {
+        people_changes[PeopleChanges::kArrivedPeople] = 50;
+    } else {
+        people_changes[PeopleChanges::kArrivedPeople] = static_cast<uint32_t>(arrived_people);
+    }
 }
 
 void Counselor::BuyLands() {
     std::cout << "How many lands do u want to buy? ";
     int32_t land_buy = 0;
-    while (true) {
-        std::cin >> land_buy;
-        if (land_buy < 0 || static_cast<uint32_t>(land_buy) * land_cost > city->GetWheat()) {
-            throw("Not enough wheat to buy lands");
-        } else {
-            city->SetWheat(city->GetWheat() - static_cast<uint32_t>(land_buy) * land_cost);
-            ruler_input[RulerInput::kLandBuy] = land_buy;
-            break;
-        }
+    std::cin >> land_buy;
+    if (land_buy < 0 || static_cast<uint32_t>(land_buy) * land_cost > city->GetWheat()) {
+        throw("Not enough wheat to buy lands");
+    } else {
+        city->SetWheat(city->GetWheat() - static_cast<uint32_t>(land_buy) * land_cost);
+        ruler_input[RulerInput::kLandBuy] = land_buy;
     }
+
 }
 
 void Counselor::GetWheatToEat() {
     std::cout << "How many wheat do u want to eat? ";
     int32_t wheat_to_eat = 0;
-    while (true) {
-        std::cin >> wheat_to_eat;
-        if (wheat_to_eat < 0 || static_cast<uint32_t>(wheat_to_eat) > city->GetWheat()) {
-            throw("Not enough wheat to eat");
-        } else {
-            city->SetWheat(city->GetWheat() - static_cast<uint32_t>(wheat_to_eat));
-            ruler_input[RulerInput::kWheatToEat] = wheat_to_eat;
-            break;
-        }
+    std::cin >> wheat_to_eat;
+    if (wheat_to_eat < 0 || static_cast<uint32_t>(wheat_to_eat) > city->GetWheat()) {
+        throw("Not enough wheat to eat");
+    } else {
+        city->SetWheat(city->GetWheat() - static_cast<uint32_t>(wheat_to_eat));
+        ruler_input[RulerInput::kWheatToEat] = wheat_to_eat;
     }
 }
 
 void Counselor::GetWheatToSow() {
     std::cout << "How many acre to sow? ";
     int32_t acre_to_sow = 0;
-    while (true) {
-        std::cin >> acre_to_sow;
-        if (acre_to_sow < 0 || static_cast<uint32_t>(acre_to_sow) / kWheatPerFarm > city->GetWheat()
-            || static_cast<uint32_t>(acre_to_sow) / kMaxLandPersonFarm > city->GetPeople()) {
-            throw("Not enough wheat or people to sow");
-        } else {
-            city->SetWheat(city->GetWheat() - static_cast<uint32_t>(acre_to_sow) / kWheatPerFarm);
-            ruler_input[RulerInput::kAcreToSow] = acre_to_sow;
-            break;
-        }
+    std::cin >> acre_to_sow;
+    if (acre_to_sow < 0 || static_cast<uint32_t>(acre_to_sow) / kWheatPerFarm > city->GetWheat()
+        || static_cast<uint32_t>(acre_to_sow) / kMaxLandPersonFarm > city->GetPeople()) {
+        throw("Not enough wheat or people to sow");
+    } else {
+        city->SetWheat(city->GetWheat() - static_cast<uint32_t>(acre_to_sow) / kWheatPerFarm);
+        ruler_input[RulerInput::kAcreToSow] = acre_to_sow;
     }
 }

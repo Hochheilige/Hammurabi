@@ -4,6 +4,9 @@
 #include <iostream>
 #include <fstream>
 
+#include <initial_game_constants.hpp>
+#include <counselor.hpp>
+
 class GameManager {
 public:
     GameManager() 
@@ -15,11 +18,15 @@ public:
         people_death_from_hunger += people;
     }
 
+    void GameInitialMessage();
+
     void GameResults(const uint32_t lands, const uint32_t people, const uint8_t year);
 
     bool IsPlayerWantPlayAgain();
 
-    bool IsPlayerExitGame();
+    bool IsPlayerExit();
+
+    void StartNewGame(Counselor& counselor);
 
     friend inline std::ofstream& operator << (std::ofstream& out, GameManager& gm) {
     	out.write(reinterpret_cast<char*>(&gm), sizeof(gm));

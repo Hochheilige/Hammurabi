@@ -1,27 +1,19 @@
 #include <iostream>
 #include <fstream>
 
-#include "initial_game_constants.hpp"
-#include "counselor.hpp"
-#include "game_manager.hpp"
-#include "saver.hpp"
+#include <game_manager.hpp>
+#include <saver.hpp>
 
 auto main() -> int {
     Counselor counselor;
     GameManager gm;
     Saver saver;
 
-    if (saver.IsFileExist()) {
+    gm.GameInitialMessage();
+    if (saver.IsFileExist() && saver.IsPlayerWantToLoad()) {
         saver.Load(counselor, gm);
     } else {
-        counselor.SetYear(kInitialRound)
-                 .SetCity(
-                    City(
-                        kDefaultLandsCount,
-                        kDefaultPeopleCount,
-                        kDefautWheatCount
-                    )
-                );
+        gm.StartNewGame(counselor);
     }
 
     while(true) {
@@ -29,41 +21,27 @@ auto main() -> int {
         counselor.GetRulerInstructions();
         counselor.ManageCity();
 
+        if (gm.IsPlayerExit()) {
+            saver.Save(counselor, gm);
+            break;
+        }
+
         gm.IncreasePeople(counselor.GetDeadPeople());
         if (counselor.GetCurrentYear() > kMaxRounds) {
             gm.GameResults(counselor.GetLands(), counselor.GetPeople(), counselor.GetCurrentYear());
             if (!gm.IsPlayerWantPlayAgain()) {
+                saver.Save(counselor, gm);
                 break;
             } else {
-                counselor.SetYear(kInitialRound)
-                .SetCity(
-                    City(
-                        kDefaultLandsCount,
-                        kDefaultPeopleCount,
-                        kDefautWheatCount
-                    )
-                )
-                .SetEvents();
+                gm.StartNewGame(counselor); 
             }
         } else if (counselor.IsPopulationDead()) {
             if (!gm.IsPlayerWantPlayAgain()) {
+                saver.Save(counselor, gm);
                 break;
             } else {
-                counselor.SetYear(kInitialRound)
-                .SetCity(
-                    City(
-                        kDefaultLandsCount,
-                        kDefaultPeopleCount,
-                        kDefautWheatCount
-                    )
-                )
-                .SetEvents();
+                gm.StartNewGame(counselor);
             }
-        }
-
-        if (gm.IsPlayerExitGame()) {
-            saver.Save(counselor, gm);
-            break;
-        }
+        } 
     }
 }
