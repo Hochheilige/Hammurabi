@@ -74,7 +74,7 @@ bool Counselor::IsPopulationDead() {
     return false;
 }
 
-std::ofstream& operator << (std::ofstream& out, Counselor& counselor) {
+std::ostream& operator << (std::ostream& out, Counselor& counselor) {
     out.write(reinterpret_cast<char*>(&counselor.current_year), sizeof(counselor.current_year));
     out.write(reinterpret_cast<char*>(&counselor.land_cost), sizeof(counselor.land_cost));
     out.write(reinterpret_cast<char*>(&counselor.is_plague_happened), sizeof(counselor.is_plague_happened));
@@ -96,7 +96,7 @@ std::ofstream& operator << (std::ofstream& out, Counselor& counselor) {
     return out;
 }
 
-std::ifstream& operator >> (std::ifstream& in, Counselor& counselor) {
+std::istream& operator >> (std::istream& in, Counselor& counselor) {
     in.read(reinterpret_cast<char*>(&counselor.current_year), sizeof(counselor.current_year));
     in.read(reinterpret_cast<char*>(&counselor.land_cost), sizeof(counselor.land_cost));
     in.read(reinterpret_cast<char*>(&counselor.is_plague_happened), sizeof(counselor.is_plague_happened));

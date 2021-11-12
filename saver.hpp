@@ -21,7 +21,7 @@ public:
     }
 
     inline void Load(Counselor& counselor, GameManager& gm) {
-        std::cout << "Game is loaded\n";
+        std::cout << "The game is loaded\n";
         std::ifstream in(filename, std::ios::binary);
         in >> counselor >> gm;
     }

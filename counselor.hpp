@@ -63,9 +63,9 @@ public:
 
 	bool IsPopulationDead(); 
 
-	friend std::ofstream& operator << (std::ofstream& out, Counselor& counselor);
+	friend std::ostream& operator << (std::ostream& out, Counselor& counselor);
 
-	friend std::ifstream& operator >> (std::ifstream& in, Counselor& counselor);
+	friend std::istream& operator >> (std::istream& in, Counselor& counselor);
 
 private:
 	inline bool IsFirstYear() { return current_year == 1; }

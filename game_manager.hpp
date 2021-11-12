@@ -28,12 +28,12 @@ public:
 
     void StartNewGame(Counselor& counselor);
 
-    friend inline std::ofstream& operator << (std::ofstream& out, GameManager& gm) {
+    friend inline std::ostream& operator << (std::ostream& out, GameManager& gm) {
     	out.write(reinterpret_cast<char*>(&gm), sizeof(gm));
     	return out;
 	}
 
-	friend inline std::ifstream& operator >> (std::ifstream& in, GameManager& gm) {
+	friend inline std::istream& operator >> (std::istream& in, GameManager& gm) {
     	in.read(reinterpret_cast<char*>(&gm), sizeof(gm));
     	return in;
 	}

@@ -18,13 +18,14 @@ auto main() -> int {
 
     while(true) {
         counselor.GetInformationAboutCity();
-        counselor.GetRulerInstructions();
-        counselor.ManageCity();
 
-        if (gm.IsPlayerExit()) {
+        if (counselor.GetCurrentYear() != 1 && gm.IsPlayerExit()) {
             saver.Save(counselor, gm);
             break;
         }
+
+        counselor.GetRulerInstructions();
+        counselor.ManageCity();
 
         gm.IncreasePeople(counselor.GetDeadPeople());
         if (counselor.GetCurrentYear() > kMaxRounds) {

@@ -39,12 +39,12 @@ public:
         return *this;
     }
 
-    friend inline std::ofstream& operator << (std::ofstream& out, City& city){
+    friend inline std::ostream& operator << (std::ostream& out, City& city){
         out.write(reinterpret_cast<char*>(&city), sizeof(city));
         return out;
     }
 
-    friend inline std::ifstream& operator >> (std::ifstream& in, City& city) {
+    friend inline std::istream& operator >> (std::istream& in, City& city) {
         in.read(reinterpret_cast<char*>(&city), sizeof(city));
         return in;
     }
